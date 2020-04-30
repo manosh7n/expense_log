@@ -1,15 +1,23 @@
+import 'package:cost_control/ExpenseDB.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'Expensive.dart';
 import 'package:intl/intl.dart';
 
 class ExpensesModel extends Model {
-  final List<Expense> _items = [
+  List<Expense> _items = [
     Expense(1, DateTime.now(), "Something", 10000),
     Expense(2, DateTime.now(), "Something2", 1000),
     Expense(3, DateTime.now(), "Something3", 100),
   ];
 
   int _idgenerator = 3;
+
+  ExpenseDB _database;
+
+  ExpensesModel() {
+    _database = ExpenseDB();
+    load();
+  }
 
   DateFormat dateFormat = DateFormat().add_yMMMMd().add_Hm();
 
@@ -21,6 +29,14 @@ class ExpensesModel extends Model {
       total += _items[i].price;
     }
     return total.toString();
+  }
+
+  void load() {
+    Future<List<Expense>> future = _database.getAllExpenses();
+    future.then((list) {
+      _items = list;
+      notifyListeners();
+    });
   }
 
   String getKey(int index) {
@@ -43,9 +59,9 @@ class ExpensesModel extends Model {
   }
 
   void AddExpense(String name, double price) {
-    _idgenerator += 1;
-    var c = Expense(_idgenerator, DateTime.now(), name, price);
-    _items.add(c);
-    notifyListeners();
+    Future<void> future = _database.addExpense(name, price, DateTime.now());
+    future.then((_) {
+      load();
+    });
   }
 }

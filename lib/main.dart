@@ -1,3 +1,4 @@
+import 'package:cost_control/AddExpense.dart';
 import 'package:cost_control/ExpensesModel.dart';
 import 'package:cost_control/Expensive.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,7 +63,9 @@ class MyHomePage extends StatelessWidget {
         floatingActionButton: ScopedModelDescendant<ExpensesModel>(
           builder: (context, child, model) => FloatingActionButton(
             onPressed: () {
-              model.AddExpense("Something", 10);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AddExpense(model);
+              }));
             },
             child: Icon(Icons.add),
           ),
