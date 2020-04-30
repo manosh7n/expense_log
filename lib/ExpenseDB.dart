@@ -9,7 +9,7 @@ class ExpenseDB {
   ExpenseDB() {}
   Database _db;
 
-  Future<Database> get Db async {
+  Future<Database> get database async {
     if (_db == null) {
       _db = await initialize();
     }
@@ -31,7 +31,7 @@ class ExpenseDB {
   }
 
   Future<List<Expense>> getAllExpenses() async {
-    Database db = await Db;
+    Database db = await database;
     var query = await db.rawQuery("SELECT * FROM Expenses ORDER BY date DESC");
     List<Expense> result = List<Expense>();
     query.forEach((f) => result.add(
@@ -40,7 +40,7 @@ class ExpenseDB {
   }
 
   Future<void> addExpense(String name, double price, DateTime dateTime) async {
-    Database db = await Db;
+    Database db = await database;
     var date = dateTime.toString();
     await db.rawInsert(
         "INSERT INTO Expenses (name, date, price) VALUES (\"$name\",\"$date\", $price)");

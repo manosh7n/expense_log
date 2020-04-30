@@ -4,24 +4,16 @@ import 'Expensive.dart';
 import 'package:intl/intl.dart';
 
 class ExpensesModel extends Model {
-  List<Expense> _items = [
-    Expense(1, DateTime.now(), "Something", 10000),
-    Expense(2, DateTime.now(), "Something2", 1000),
-    Expense(3, DateTime.now(), "Something3", 100),
-  ];
-
-  int _idgenerator = 3;
-
+  List<Expense> _items = [];
+  DateFormat dateFormat = DateFormat().add_yMMMMd().add_Hm();
   ExpenseDB _database;
+
+  int get recordCount => _items.length;
 
   ExpensesModel() {
     _database = ExpenseDB();
     load();
   }
-
-  DateFormat dateFormat = DateFormat().add_yMMMMd().add_Hm();
-
-  int get recordCount => _items.length;
 
   String getTotalExp() {
     double total = 0.0;
@@ -58,8 +50,8 @@ class ExpensesModel extends Model {
     notifyListeners();
   }
 
-  void AddExpense(String name, double price) {
-    Future<void> future = _database.addExpense(name, price, DateTime.now());
+  void AddExpense(String name, double price, DateTime date) {
+    Future<void> future = _database.addExpense(name, price, date);
     future.then((_) {
       load();
     });
