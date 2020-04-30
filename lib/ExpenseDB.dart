@@ -45,4 +45,9 @@ class ExpenseDB {
     await db.rawInsert(
         "INSERT INTO Expenses (name, date, price) VALUES (\"$name\",\"$date\", $price)");
   }
+
+  Future<void> delExpense(int index) async {
+    Database db = await database;
+    await db.rawDelete("DELETE FROM Expenses WHERE id = $index");
+  }
 }

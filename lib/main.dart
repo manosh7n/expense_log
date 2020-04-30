@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -43,11 +42,71 @@ class MyHomePage extends StatelessWidget {
                   index -= 1;
                   return Dismissible(
                     key: Key(model.getKey(index)),
+                    background: Container(
+                      color: Colors.blue,
+                      child: Align(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              " Edit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.centerLeft,
+                      ),
+                    ),
+                    secondaryBackground: Container(
+                      color: Colors.red,
+                      child: Align(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              " Delete",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.centerRight,
+                      ),
+                    ),
                     onDismissed: (direction) {
-                      model.RemoveAt(index);
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("deleted record $index"),
-                      ));
+                      if (direction == DismissDirection.endToStart) {
+                        model.DelExpense(int.parse(model.getKey(index)));
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text("Deleted successfully"),
+                        ));
+                      } else if (direction == DismissDirection.startToEnd) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.blue,
+                          content: Text("Update successfully"),
+                        ));
+                      }
                     },
                     child: ListTile(
                       title: Text(model.getText(index)),

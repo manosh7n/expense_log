@@ -56,4 +56,11 @@ class ExpensesModel extends Model {
       load();
     });
   }
+
+  void DelExpense(int index) {
+    Future<void> future = _database.delExpense(index);
+    future.then((_) {
+      load();
+    });
+  }
 }

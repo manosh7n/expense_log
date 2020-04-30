@@ -17,20 +17,20 @@ class _AddExpenseState extends State<AddExpense> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text("Add expense"),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(40.0),
           child: Form(
             key: _formkey,
             child: Column(
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Cost',
+                  decoration: InputDecoration(
+                    labelText: 'Стоимость',
                   ),
-                  
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (double.tryParse(value) != null) {
@@ -43,17 +43,27 @@ class _AddExpenseState extends State<AddExpense> {
                     _price = double.parse(value);
                   },
                 ),
+                SizedBox(height: 10),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Name',
+                  decoration: InputDecoration(
+                    labelText: 'Товар',
                   ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Wrong value";
+                    } else {
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.text,
                   onSaved: (value) {
                     _name = value;
                   },
                 ),
+                SizedBox(height: 10),
                 DateTimeField(
-                  decoration: const InputDecoration(
-                    hintText: 'Date',
+                  decoration: InputDecoration(
+                    labelText: 'Дата',
                   ),
                   format: format,
                   onShowPicker: (context, currentValue) async {
@@ -77,17 +87,25 @@ class _AddExpenseState extends State<AddExpense> {
                     _date = DateTime.parse(value.toString());
                   },
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    if (_formkey.currentState.validate()) {
-                      _formkey.currentState.save();
-                      _model.AddExpense(_name, _price, _date);
+                SizedBox(height: 20),
+                ButtonTheme(
+                  minWidth: 160,
+                  height: 50,
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    splashColor: Colors.greenAccent,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      if (_formkey.currentState.validate()) {
+                        _formkey.currentState.save();
+                        _model.AddExpense(_name, _price, _date);
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text("Add"),
+                  ),
+                ),
 
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Text("Add"),
-                )
               ],
             ),
           ),
