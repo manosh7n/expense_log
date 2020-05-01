@@ -18,7 +18,7 @@ class ExpenseDB {
 
   initialize() async {
     Directory documentDir = await getApplicationDocumentsDirectory();
-    var path = join(documentDir.path, "db.db");
+    var path = join(documentDir.path, "db2.db");
     return openDatabase(
       path,
       version: 1,
@@ -32,7 +32,8 @@ class ExpenseDB {
 
   Future<List<Expense>> getAllExpenses() async {
     Database db = await database;
-    var query = await db.rawQuery("SELECT * FROM Expenses ORDER BY date DESC");
+    var query =
+        await db.rawQuery("SELECT * FROM Expenses ORDER BY date DESC");
     List<Expense> result = List<Expense>();
     query.forEach((f) => result.add(
         Expense(f["id"], DateTime.parse(f["date"]), f["name"], f["price"])));
@@ -49,5 +50,14 @@ class ExpenseDB {
   Future<void> delExpense(int index) async {
     Database db = await database;
     await db.rawDelete("DELETE FROM Expenses WHERE id = $index");
+  }
+
+  Future<void> editExpense(String name, double price, DateTime dateTime,
+      int index) async {
+    Database db = await database;
+    var date = dateTime.toString();
+
+    await db.rawUpdate(
+        "UPDATE Expenses SET name = \"$name\", date = \"$date\", price = $price WHERE id = $index;");
   }
 }

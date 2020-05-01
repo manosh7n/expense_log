@@ -35,6 +35,18 @@ class ExpensesModel extends Model {
     return _items[index].id.toString();
   }
 
+  String getName(int index) {
+    return _items[index].name.toString();
+  }
+
+  String getPrice(int index) {
+    return _items[index].price.toString();
+  }
+
+  String getDate(int index) {
+    return _items[index].date.toString();
+  }
+
   String getText(int index) {
     var temp = _items[index];
     return temp.name +
@@ -43,11 +55,6 @@ class ExpensesModel extends Model {
         "\$" +
         "\n" +
         dateFormat.format(temp.date);
-  }
-
-  void RemoveAt(int index) {
-    _items.removeAt(index);
-    notifyListeners();
   }
 
   void AddExpense(String name, double price, DateTime date) {
@@ -59,6 +66,13 @@ class ExpensesModel extends Model {
 
   void DelExpense(int index) {
     Future<void> future = _database.delExpense(index);
+    future.then((_) {
+      load();
+    });
+  }
+
+  void EditExpense(String name, double price, DateTime date, int index) {
+    Future<void> future = _database.editExpense(name, price, date, index);
     future.then((_) {
       load();
     });

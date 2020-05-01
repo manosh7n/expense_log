@@ -1,4 +1,5 @@
 import 'package:cost_control/AddExpense.dart';
+import 'package:cost_control/EditExpense.dart';
 import 'package:cost_control/ExpensesModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MyHomePage(title: 'Flutter Home Page'),
+      home: MyHomePage(title: 'Expenses log'),
     );
   }
 }
@@ -41,7 +42,7 @@ class MyHomePage extends StatelessWidget {
                 } else {
                   index -= 1;
                   return Dismissible(
-                    key: Key(model.getKey(index)),
+                    key: UniqueKey(),
                     background: Container(
                       color: Colors.blue,
                       child: Align(
@@ -98,11 +99,21 @@ class MyHomePage extends StatelessWidget {
                       if (direction == DismissDirection.endToStart) {
                         model.DelExpense(int.parse(model.getKey(index)));
                         Scaffold.of(context).showSnackBar(SnackBar(
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                           content: Text("Deleted successfully"),
                         ));
                       } else if (direction == DismissDirection.startToEnd) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EditExpense(
+                            model,
+                            int.parse(model.getKey(index)),
+                            index
+                          );
+                        }));
                         Scaffold.of(context).showSnackBar(SnackBar(
+                          duration: Duration(seconds: 1),
                           backgroundColor: Colors.blue,
                           content: Text("Update successfully"),
                         ));

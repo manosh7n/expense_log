@@ -1,25 +1,26 @@
 import 'package:cost_control/ExpensesModel.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 
-class _AddExpenseState extends State<AddExpense> {
+class _EditExpanseState extends State<EditExpense> {
+  ExpensesModel _model;
+  int _index;
+  int _indexInit;
   double _price;
   String _name;
+  _EditExpanseState(this._model, this._index, this._indexInit);
   DateTime _date;
   final format = DateFormat("yyyy-MM-dd HH:mm");
-  ExpensesModel _model;
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
-  _AddExpenseState(this._model);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          title: Text("Add expense"),
+          title: Text("Edit expense"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(40.0),
@@ -28,9 +29,8 @@ class _AddExpenseState extends State<AddExpense> {
             child: Column(
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Cost',
-                  ),
+                  initialValue: _model.getPrice(_indexInit),
+                  decoration: InputDecoration(labelText: "Cost"),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (double.tryParse(value) != null) {
@@ -45,9 +45,8 @@ class _AddExpenseState extends State<AddExpense> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Purchase',
-                  ),
+                  initialValue: _model.getName(_indexInit),
+                  decoration: InputDecoration(labelText: "Purchase"),
                   validator: (value) {
                     if (value.isEmpty) {
                       return "Wrong value";
@@ -62,9 +61,8 @@ class _AddExpenseState extends State<AddExpense> {
                 ),
                 SizedBox(height: 10),
                 DateTimeField(
-                  decoration: InputDecoration(
-                    labelText: 'Date',
-                  ),
+                  initialValue: DateTime.parse(_model.getDate(_indexInit)),
+                  decoration: InputDecoration(labelText: "Date"),
                   format: format,
                   onShowPicker: (context, currentValue) async {
                     final date = await showDatePicker(
@@ -98,14 +96,13 @@ class _AddExpenseState extends State<AddExpense> {
                     onPressed: () {
                       if (_formkey.currentState.validate()) {
                         _formkey.currentState.save();
-                        _model.AddExpense(_name, _price, _date);
+                        _model.EditExpense(_name, _price, _date, _index);
                         Navigator.pop(context);
                       }
                     },
-                    child: Text("Add"),
+                    child: Text("Edit"),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -113,9 +110,12 @@ class _AddExpenseState extends State<AddExpense> {
   }
 }
 
-class AddExpense extends StatefulWidget {
+class EditExpense extends StatefulWidget {
   final ExpensesModel _model;
-  AddExpense(this._model);
+  final int _index;
+  final int _indexInit;
+  EditExpense(this._model, this._index, this._indexInit);
   @override
-  State<StatefulWidget> createState() => _AddExpenseState(_model);
+  State<StatefulWidget> createState() =>
+      _EditExpanseState(_model, _index, _indexInit);
 }
