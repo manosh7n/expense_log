@@ -96,7 +96,7 @@ class _AddExpenseState extends State<AddExpense> {
                   minWidth: 160,
                   height: 50,
                   child: RaisedButton(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).accentColor,
                     splashColor: Colors.greenAccent,
                     textColor: Colors.white,
                     onPressed: () {

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ExpenseDB {
-  ExpenseDB() {}
+  ExpenseDB();
   Database _db;
 
   Future<Database> get database async {

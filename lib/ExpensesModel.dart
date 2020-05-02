@@ -10,6 +10,7 @@ class ExpensesModel extends Model {
   DateFormat dateFormatMonth = DateFormat().add_yMMMM();
   ExpenseDB _database;
   String state = "All";
+  bool isUpdated = false;
 
   int get recordCount => _items.length;
 

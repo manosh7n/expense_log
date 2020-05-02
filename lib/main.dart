@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Expenses log',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primaryColor: Colors.grey[850],
+        accentColor: Colors.green[700],
+        brightness: Brightness.dark,
       ),
       home: MyHomePage(title: 'Expenses log'),
     );
@@ -32,11 +34,17 @@ class MyHomePage extends StatelessWidget {
       model: ExpensesModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            title,
-            style: TextStyle(fontSize: 22),
-          ),
-        ),
+            title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              'lib/assets/logo.png',
+              fit: BoxFit.fill,
+              width: 120,
+              height: 130,
+            ),
+          ],
+        )),
         body: ScopedModelDescendant<ExpensesModel>(
           builder: (context, child, model) => ListView.separated(
               itemBuilder: (context, index) {
@@ -51,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                           style: TextStyle(fontSize: 18),
                         ),
                         FlatButton(
-                          color: Colors.green,
+                          color: Theme.of(context).accentColor,
                           textColor: Colors.white,
                           disabledColor: Colors.grey,
                           disabledTextColor: Colors.black,
@@ -76,7 +84,7 @@ class MyHomePage extends StatelessWidget {
                           },
                         ),
                         FlatButton(
-                          color: Colors.green,
+                          color: Theme.of(context).accentColor,
                           textColor: Colors.white,
                           disabledColor: Colors.grey,
                           disabledTextColor: Colors.black,
@@ -116,7 +124,7 @@ class MyHomePage extends StatelessWidget {
                       return true;
                     },
                     background: Container(
-                      color: Colors.blue,
+                      color: Colors.grey[700],
                       child: Align(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -171,9 +179,12 @@ class MyHomePage extends StatelessWidget {
                       if (direction == DismissDirection.endToStart) {
                         model.DelExpense(int.parse(model.getKey(index)));
                         Scaffold.of(context).showSnackBar(SnackBar(
-                          duration: Duration(seconds: 2),
+                          duration: Duration(seconds: 1),
                           backgroundColor: Colors.red,
-                          content: Text("Deleted successfully"),
+                          content: Text(
+                            "Deleted successfully",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ));
                       } else if (direction == DismissDirection.startToEnd) {
                         await Navigator.push(context,
@@ -181,11 +192,14 @@ class MyHomePage extends StatelessWidget {
                           return EditExpense(
                               model, int.parse(model.getKey(index)), index);
                         }));
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          duration: Duration(seconds: 1),
-                          backgroundColor: Colors.blue,
-                          content: Text("Update successfully"),
-                        ));
+                        if (model.isUpdated) {
+                          model.isUpdated = false;
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            duration: Duration(seconds: 1),
+                            backgroundColor: Colors.grey[300],
+                            content: Text("Successfully updated"),
+                          ));
+                        }
                       }
                     },
                     child: Container(
@@ -212,18 +226,23 @@ class MyHomePage extends StatelessWidget {
                             return EditExpense(
                                 model, int.parse(model.getKey(index)), index);
                           }));
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            duration: Duration(seconds: 1),
-                            backgroundColor: Colors.blue,
-                            content: Text("Successfully updated"),
-                          ));
+                          if (model.isUpdated) {
+                            model.isUpdated = false;
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              duration: Duration(seconds: 1),
+                              backgroundColor: Colors.grey[300],
+                              content: Text("Successfully updated"),
+                            ));
+                          }
                         },
                       ),
                     ),
                   );
                 }
               },
-              separatorBuilder: (context, index) => Divider(),
+              separatorBuilder: (context, index) => Divider(
+                    height: 5,
+                  ),
               itemCount: model.recordCount + 1),
         ),
         floatingActionButton: ScopedModelDescendant<ExpensesModel>(
@@ -247,39 +266,47 @@ Future<bool> _showConfirmationDialog(BuildContext context, String action) {
     barrierDismissible: true,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Do you want to $action this record?', textAlign: TextAlign.center),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 60),
-            child: FlatButton(
-              color: Colors.green,
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              padding: EdgeInsets.all(10.0),
-              splashColor: Colors.greenAccent,
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.pop(context, true); // showDialog() returns true
-              },
+        title: Text('Do you want to $action this record?',
+            textAlign: TextAlign.center),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            ButtonTheme(
+              minWidth: 100,
+              child: FlatButton(
+                color: Theme.of(context).accentColor,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                splashColor: Colors.greenAccent,
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(fontSize: 16),
+                ),
+                onPressed: () {
+                  Navigator.pop(context, true); // showDialog() returns true
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: FlatButton(
-              color: Colors.green,
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              padding: EdgeInsets.all(10.0),
-              splashColor: Colors.greenAccent,
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.pop(context, false); // showDialog() returns false
-              },
+            ButtonTheme(
+              minWidth: 100,
+              child: FlatButton(
+                color: Theme.of(context).accentColor,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                splashColor: Colors.greenAccent,
+                child: const Text(
+                  'No',
+                  style: TextStyle(fontSize: 16),
+                ),
+                onPressed: () {
+                  Navigator.pop(context, false); // showDialog() returns false
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     },
   );

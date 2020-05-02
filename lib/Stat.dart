@@ -31,7 +31,7 @@ class Stat extends StatelessWidget {
                   return Container(
                     child: ListTile(
                       title: Text(model.getName(index), style: TextStyle(fontSize: 20),),
-                      leading: Icon(Icons.attach_money, color: Colors.black,),
+                      leading: Icon(Icons.attach_money,),
                       trailing: Text(model.getPrice(index) + "\$", style: TextStyle(fontSize: 18),),
                     ),
                   );

@@ -10,8 +10,8 @@ class _EditExpanseState extends State<EditExpense> {
   int _indexInit;
   double _price;
   String _name;
-  _EditExpanseState(this._model, this._index, this._indexInit);
   DateTime _date;
+  _EditExpanseState(this._model, this._index, this._indexInit);
   final format = DateFormat("yyyy-MM-dd HH:mm");
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -93,13 +93,14 @@ class _EditExpanseState extends State<EditExpense> {
                   minWidth: 160,
                   height: 50,
                   child: RaisedButton(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).accentColor,
                     splashColor: Colors.greenAccent,
                     textColor: Colors.white,
                     onPressed: () {
                       if (_formkey.currentState.validate()) {
                         _formkey.currentState.save();
                         _model.EditExpense(_name, _price, _date, _index);
+                        _model.isUpdated = true;
                         Navigator.pop(context);
                       }
                     },
