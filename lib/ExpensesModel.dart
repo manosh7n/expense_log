@@ -47,6 +47,10 @@ class ExpensesModel extends Model {
     return _items[index].date.toString();
   }
 
+  String getTextDate(int index) {
+    return dateFormat.format(_items[index].date);
+  }
+
   String getText(int index) {
     var temp = _items[index];
     return temp.name +

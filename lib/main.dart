@@ -43,6 +43,14 @@ class MyHomePage extends StatelessWidget {
                   index -= 1;
                   return Dismissible(
                     key: UniqueKey(),
+                    confirmDismiss: (DismissDirection direction) async {
+                      if (direction == DismissDirection.endToStart) {
+                        return await _showConfirmationDialog(
+                                context, 'delete') ==
+                            true;
+                      }
+                      return true;
+                    },
                     background: Container(
                       color: Colors.blue,
                       child: Align(
@@ -95,7 +103,7 @@ class MyHomePage extends StatelessWidget {
                         alignment: Alignment.centerRight,
                       ),
                     ),
-                    onDismissed: (direction) {
+                    onDismissed: (direction) async {
                       if (direction == DismissDirection.endToStart) {
                         model.DelExpense(int.parse(model.getKey(index)));
                         Scaffold.of(context).showSnackBar(SnackBar(
@@ -104,13 +112,10 @@ class MyHomePage extends StatelessWidget {
                           content: Text("Deleted successfully"),
                         ));
                       } else if (direction == DismissDirection.startToEnd) {
-                        Navigator.push(context,
+                        await Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return EditExpense(
-                            model,
-                            int.parse(model.getKey(index)),
-                            index
-                          );
+                              model, int.parse(model.getKey(index)), index);
                         }));
                         Scaffold.of(context).showSnackBar(SnackBar(
                           duration: Duration(seconds: 1),
@@ -119,10 +124,30 @@ class MyHomePage extends StatelessWidget {
                         ));
                       }
                     },
-                    child: ListTile(
-                      title: Text(model.getText(index)),
-                      leading: Icon(Icons.monetization_on),
-                      trailing: Icon(Icons.delete),
+                    child: Container(
+                      child: ListTile(
+                        title: Text(model.getName(index)),
+                        subtitle: Text("Cost: " +
+                            model.getPrice(index) +
+                            "\$" +
+                            "\n" +
+                            model.getTextDate(index)),
+                        isThreeLine: true,
+                        leading: Icon(Icons.monetization_on),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                        onTap: () async {
+                          await Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return EditExpense(
+                                model, int.parse(model.getKey(index)), index);
+                          }));
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            duration: Duration(seconds: 1),
+                            backgroundColor: Colors.blue,
+                            content: Text("Update successfully"),
+                          ));
+                        },
+                      ),
                     ),
                   );
                 }
@@ -143,4 +168,42 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool> _showConfirmationDialog(BuildContext context, String action) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Do you want to $action this record?'),
+        actions: <Widget>[
+          FlatButton(
+            color: Colors.green,
+            textColor: Colors.white,
+            disabledColor: Colors.grey,
+            disabledTextColor: Colors.black,
+            padding: EdgeInsets.all(10.0),
+            splashColor: Colors.greenAccent,
+            child: const Text('Yes'),
+            onPressed: () {
+              Navigator.pop(context, true); // showDialog() returns true
+            },
+          ),
+          FlatButton(
+            color: Colors.green,
+            textColor: Colors.white,
+            disabledColor: Colors.grey,
+            disabledTextColor: Colors.black,
+            padding: EdgeInsets.all(10.0),
+            splashColor: Colors.greenAccent,
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.pop(context, false); // showDialog() returns false
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
