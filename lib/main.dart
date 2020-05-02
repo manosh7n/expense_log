@@ -4,6 +4,7 @@ import 'package:cost_control/ExpensesModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:cost_control/Stat.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,14 +32,77 @@ class MyHomePage extends StatelessWidget {
       model: ExpensesModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 22),
+          ),
         ),
         body: ScopedModelDescendant<ExpensesModel>(
           builder: (context, child, model) => ListView.separated(
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return ListTile(
-                      title: Text("Total expenses: " + model.getTotalExp()));
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          "Show expenses by: ",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        FlatButton(
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          disabledColor: Colors.grey,
+                          disabledTextColor: Colors.black,
+                          padding: EdgeInsets.all(10.0),
+                          splashColor: Colors.greenAccent,
+                          child: const Text(
+                            'Year',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () async {
+                            await Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              model.state = "year";
+                              model.load(model.state);
+                              return Stat(
+                                title: "Expenses",
+                                model: model,
+                              );
+                            }));
+                            model.state = "All";
+                            model.load(model.state);
+                          },
+                        ),
+                        FlatButton(
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          disabledColor: Colors.grey,
+                          disabledTextColor: Colors.black,
+                          padding: EdgeInsets.all(10.0),
+                          splashColor: Colors.greenAccent,
+                          child: const Text(
+                            'Month',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () async {
+                            await Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              model.state = "month";
+                              model.load(model.state);
+                              return Stat(
+                                title: "Expenses",
+                                model: model,
+                              );
+                            }));
+                            model.state = "All";
+                            model.load(model.state);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 } else {
                   index -= 1;
                   return Dismissible(
@@ -126,14 +190,21 @@ class MyHomePage extends StatelessWidget {
                     },
                     child: Container(
                       child: ListTile(
-                        title: Text(model.getName(index)),
-                        subtitle: Text("Cost: " +
-                            model.getPrice(index) +
-                            "\$" +
-                            "\n" +
-                            model.getTextDate(index)),
+                        title: Text(
+                          model.getName(index),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        subtitle: Text(
+                          "Cost: " +
+                              model.getPrice(index) +
+                              "\$" +
+                              "\n" +
+                              model.getTextDate(index),
+                          style: TextStyle(fontSize: 15),
+                        ),
                         isThreeLine: true,
-                        leading: Icon(Icons.monetization_on),
+                        leading:
+                            Icon(Icons.monetization_on, color: Colors.grey),
                         trailing: Icon(Icons.arrow_forward_ios),
                         onTap: () async {
                           await Navigator.push(context,
@@ -144,7 +215,7 @@ class MyHomePage extends StatelessWidget {
                           Scaffold.of(context).showSnackBar(SnackBar(
                             duration: Duration(seconds: 1),
                             backgroundColor: Colors.blue,
-                            content: Text("Update successfully"),
+                            content: Text("Successfully updated"),
                           ));
                         },
                       ),
@@ -176,31 +247,37 @@ Future<bool> _showConfirmationDialog(BuildContext context, String action) {
     barrierDismissible: true,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Do you want to $action this record?'),
+        title: Text('Do you want to $action this record?', textAlign: TextAlign.center),
         actions: <Widget>[
-          FlatButton(
-            color: Colors.green,
-            textColor: Colors.white,
-            disabledColor: Colors.grey,
-            disabledTextColor: Colors.black,
-            padding: EdgeInsets.all(10.0),
-            splashColor: Colors.greenAccent,
-            child: const Text('Yes'),
-            onPressed: () {
-              Navigator.pop(context, true); // showDialog() returns true
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 60),
+            child: FlatButton(
+              color: Colors.green,
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.greenAccent,
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.pop(context, true); // showDialog() returns true
+              },
+            ),
           ),
-          FlatButton(
-            color: Colors.green,
-            textColor: Colors.white,
-            disabledColor: Colors.grey,
-            disabledTextColor: Colors.black,
-            padding: EdgeInsets.all(10.0),
-            splashColor: Colors.greenAccent,
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context, false); // showDialog() returns false
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: FlatButton(
+              color: Colors.green,
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.greenAccent,
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.pop(context, false); // showDialog() returns false
+              },
+            ),
           ),
         ],
       );

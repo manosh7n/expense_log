@@ -29,11 +29,12 @@ class _EditExpanseState extends State<EditExpense> {
             child: Column(
               children: [
                 TextFormField(
+                  style: new TextStyle(fontSize: 20),
                   initialValue: _model.getPrice(_indexInit),
                   decoration: InputDecoration(labelText: "Cost"),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (double.tryParse(value) != null) {
+                    if (double.tryParse(value) != null && value.length < 12) {
                       return null;
                     } else {
                       return "Wrong value";
@@ -45,6 +46,7 @@ class _EditExpanseState extends State<EditExpense> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  style: new TextStyle(fontSize: 20),
                   initialValue: _model.getName(_indexInit),
                   decoration: InputDecoration(labelText: "Purchase"),
                   validator: (value) {
@@ -61,6 +63,7 @@ class _EditExpanseState extends State<EditExpense> {
                 ),
                 SizedBox(height: 10),
                 DateTimeField(
+                  style: new TextStyle(fontSize: 20),
                   initialValue: DateTime.parse(_model.getDate(_indexInit)),
                   decoration: InputDecoration(labelText: "Date"),
                   format: format,
@@ -100,7 +103,7 @@ class _EditExpanseState extends State<EditExpense> {
                         Navigator.pop(context);
                       }
                     },
-                    child: Text("Edit"),
+                    child: Text("Save"),
                   ),
                 ),
               ],

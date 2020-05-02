@@ -28,12 +28,14 @@ class _AddExpenseState extends State<AddExpense> {
             child: Column(
               children: [
                 TextFormField(
+                  style: new TextStyle(fontSize: 20),
                   decoration: InputDecoration(
                     labelText: 'Cost',
+
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (double.tryParse(value) != null) {
+                    if (double.tryParse(value) != null && value.length < 12) {
                       return null;
                     } else {
                       return "Wrong value";
@@ -45,6 +47,7 @@ class _AddExpenseState extends State<AddExpense> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  style: new TextStyle(fontSize: 20),
                   decoration: InputDecoration(
                     labelText: 'Purchase',
                   ),
@@ -62,6 +65,7 @@ class _AddExpenseState extends State<AddExpense> {
                 ),
                 SizedBox(height: 10),
                 DateTimeField(
+                  style: new TextStyle(fontSize: 20),
                   decoration: InputDecoration(
                     labelText: 'Date',
                   ),

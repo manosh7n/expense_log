@@ -6,13 +6,16 @@ import 'package:intl/intl.dart';
 class ExpensesModel extends Model {
   List<Expense> _items = [];
   DateFormat dateFormat = DateFormat().add_yMMMMd().add_Hm();
+  DateFormat dateFormatYear = DateFormat().add_y();
+  DateFormat dateFormatMonth = DateFormat().add_yMMMM();
   ExpenseDB _database;
+  String state = "All";
 
   int get recordCount => _items.length;
 
   ExpensesModel() {
     _database = ExpenseDB();
-    load();
+    load("All");
   }
 
   String getTotalExp() {
@@ -23,8 +26,8 @@ class ExpensesModel extends Model {
     return total.toString();
   }
 
-  void load() {
-    Future<List<Expense>> future = _database.getAllExpenses();
+  void load(String date) {
+    Future<List<Expense>> future = _database.getAllExpenses(date);
     future.then((list) {
       _items = list;
       notifyListeners();
@@ -36,6 +39,11 @@ class ExpensesModel extends Model {
   }
 
   String getName(int index) {
+    if (state == "year") {
+      return dateFormatYear.format(_items[index].date).toString();
+    } else if (state == "month") {
+      return dateFormatMonth.format(_items[index].date).toString();
+    }
     return _items[index].name.toString();
   }
 
@@ -51,34 +59,24 @@ class ExpensesModel extends Model {
     return dateFormat.format(_items[index].date);
   }
 
-  String getText(int index) {
-    var temp = _items[index];
-    return temp.name +
-        " for " +
-        temp.price.toString() +
-        "\$" +
-        "\n" +
-        dateFormat.format(temp.date);
-  }
-
   void AddExpense(String name, double price, DateTime date) {
     Future<void> future = _database.addExpense(name, price, date);
     future.then((_) {
-      load();
+      load("All");
     });
   }
 
   void DelExpense(int index) {
     Future<void> future = _database.delExpense(index);
     future.then((_) {
-      load();
+      load("All");
     });
   }
 
   void EditExpense(String name, double price, DateTime date, int index) {
     Future<void> future = _database.editExpense(name, price, date, index);
     future.then((_) {
-      load();
+      load("All");
     });
   }
 }
