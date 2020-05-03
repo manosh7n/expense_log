@@ -34,7 +34,11 @@ class _EditExpanseState extends State<EditExpense> {
                   decoration: InputDecoration(labelText: "Cost"),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (double.tryParse(value) != null && value.length < 12) {
+                    int count = value.length - value.indexOf('.');
+
+                    if (double.tryParse(value) != null &&
+                        value.length < 12 &&
+                        (count < 4 || value.indexOf('.') == -1)) {
                       return null;
                     } else {
                       return "Wrong value";

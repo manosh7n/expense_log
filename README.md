@@ -1,6 +1,6 @@
 # cost_control
 
-A new Flutter project.
+Expenses log
 
 ## Getting Started
 

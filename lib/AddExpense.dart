@@ -31,11 +31,14 @@ class _AddExpenseState extends State<AddExpense> {
                   style: new TextStyle(fontSize: 20),
                   decoration: InputDecoration(
                     labelText: 'Cost',
-
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (double.tryParse(value) != null && value.length < 12) {
+                    int count = value.length - value.indexOf('.');
+
+                    if (double.tryParse(value) != null &&
+                        value.length < 12 &&
+                        (count < 4 || value.indexOf('.') == -1)) {
                       return null;
                     } else {
                       return "Wrong value";
@@ -109,7 +112,6 @@ class _AddExpenseState extends State<AddExpense> {
                     child: Text("Add"),
                   ),
                 ),
-
               ],
             ),
           ),
