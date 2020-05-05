@@ -1,5 +1,4 @@
 import 'package:cost_control/AddExpense.dart';
-import 'package:cost_control/EditExpense.dart';
 import 'package:cost_control/ExpensesModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -189,8 +188,8 @@ class MyHomePage extends StatelessWidget {
                       } else if (direction == DismissDirection.startToEnd) {
                         await Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return EditExpense(
-                              model, int.parse(model.getKey(index)), index);
+                          return AddExpense(
+                              model, int.parse(model.getKey(index)), index, true);
                         }));
                         if (model.isUpdated) {
                           model.isUpdated = false;
@@ -223,8 +222,8 @@ class MyHomePage extends StatelessWidget {
                         onTap: () async {
                           await Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return EditExpense(
-                                model, int.parse(model.getKey(index)), index);
+                            return AddExpense(
+                                model, int.parse(model.getKey(index)), index, true);
                           }));
                           if (model.isUpdated) {
                             model.isUpdated = false;

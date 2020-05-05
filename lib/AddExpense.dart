@@ -5,14 +5,17 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 
 class _AddExpenseState extends State<AddExpense> {
+  ExpensesModel _model;
   double _price;
   String _name;
   DateTime _date;
+  int _index, _indexInit;
+  bool _editMode;
+
   final format = DateFormat("yyyy-MM-dd HH:mm");
-  ExpensesModel _model;
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  _AddExpenseState(this._model);
+  _AddExpenseState(this._model, this._index, this._indexInit, this._editMode);
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class _AddExpenseState extends State<AddExpense> {
               children: [
                 TextFormField(
                   style: new TextStyle(fontSize: 20),
+                  initialValue: _editMode ? _model.getPrice(_indexInit) : null,
                   decoration: InputDecoration(
                     labelText: 'Cost',
                   ),
@@ -51,6 +55,7 @@ class _AddExpenseState extends State<AddExpense> {
                 SizedBox(height: 10),
                 TextFormField(
                   style: new TextStyle(fontSize: 20),
+                  initialValue: _editMode ? _model.getName(_indexInit) : null,
                   decoration: InputDecoration(
                     labelText: 'Purchase',
                   ),
@@ -69,6 +74,9 @@ class _AddExpenseState extends State<AddExpense> {
                 SizedBox(height: 10),
                 DateTimeField(
                   style: new TextStyle(fontSize: 20),
+                  initialValue: _editMode
+                      ? DateTime.parse(_model.getDate(_indexInit))
+                      : DateTime.now(),
                   decoration: InputDecoration(
                     labelText: 'Date',
                   ),
@@ -105,11 +113,16 @@ class _AddExpenseState extends State<AddExpense> {
                     onPressed: () {
                       if (_formkey.currentState.validate()) {
                         _formkey.currentState.save();
-                        _model.AddExpense(_name, _price, _date);
+                        if (_editMode) {
+                          _model.EditExpense(_name, _price, _date, _index);
+                          _model.isUpdated = true;
+                        } else {
+                          _model.AddExpense(_name, _price, _date);
+                        }
                         Navigator.pop(context);
                       }
                     },
-                    child: Text("Add"),
+                    child: _editMode ? Text("Save") : Text("Add"),
                   ),
                 ),
               ],
@@ -121,7 +134,12 @@ class _AddExpenseState extends State<AddExpense> {
 
 class AddExpense extends StatefulWidget {
   final ExpensesModel _model;
-  AddExpense(this._model);
+  int _index;
+  int _indexInit;
+  bool _editMode;
+
+  AddExpense(this._model, [this._index = 0, this._indexInit = 0, this._editMode = false]);
   @override
-  State<StatefulWidget> createState() => _AddExpenseState(_model);
+  State<StatefulWidget> createState() =>
+      _AddExpenseState(_model, _index, _indexInit, _editMode);
 }
